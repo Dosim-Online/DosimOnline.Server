@@ -28,8 +28,6 @@ public class DosimOnlineServer {
 			for (Entity e : entities)
 				e.update((int) delta);
 
-
-			System.out.println("Delta: " + delta);
 			lastUpdate = getTime();
 		}
 	}
