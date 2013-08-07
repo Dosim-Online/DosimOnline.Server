@@ -24,17 +24,17 @@ public class StarOfDavid extends Entity {
 	}
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
-		x += direction.x * speed * (delta / 1000.0f);
-		y += direction.x * speed * (delta / 1000.0f);
+	public void update() {
+		super.update();
+		x += direction.x * speed;
+		y += direction.x * speed;
 
 		if (collide(x, y, "Solid") != null) {
 			this.destroy();
 		}
 
 		if (shouldDie > 0)
-			shouldDie -= delta;
+			shouldDie--;
 		else
 			destroy();
 	}

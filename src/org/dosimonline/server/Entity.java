@@ -27,10 +27,11 @@ public class Entity {
 		return null;
 	}
 
-	public void update(int delta) {
+	public void update() {
 	}
 	
 	public void destroy() {
 		DosimOnlineServer.entities.remove(this);
+		DosimOnlineServer.print("A " + type + " just died.");
 	}
 }

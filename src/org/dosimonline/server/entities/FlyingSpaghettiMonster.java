@@ -12,7 +12,7 @@ public class FlyingSpaghettiMonster extends Entity {
 	int changeDirectionTimeout = 0;
 	int attackTimeout = 2000;
 	int life = 3;
-	Vector2f direction;
+	Vector2f direction = new Vector2f();
 	Random random = new Random();
 
 	public FlyingSpaghettiMonster(float x, float y) {
@@ -34,6 +34,13 @@ public class FlyingSpaghettiMonster extends Entity {
 		}
 	}
 	
+	boolean areThereAnyDoses() {
+		for (Entity e : DosimOnlineServer.entities)
+			if (e instanceof Dos)
+				return true;
+		return false;
+	}
+	
 	void newVelocity() {
 		speed = randomBetween(random, MAX_SPEED / 2, MAX_SPEED);
 
@@ -53,10 +60,13 @@ public class FlyingSpaghettiMonster extends Entity {
 	}
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
-		changeDirectionTimeout -= delta;
-		attackTimeout -= delta;
+	public void update() {
+		super.update();
+		if (!areThereAnyDoses())
+			destroy();
+		
+		changeDirectionTimeout--;
+		attackTimeout--;
 
 		shootOnDos();
 
@@ -65,8 +75,8 @@ public class FlyingSpaghettiMonster extends Entity {
 			changeDirectionTimeout = CHANGE_DIRECTION_TIME;
 		}
 
-		x += direction.x * speed * (delta / 1000.0f);
-		y += direction.y * speed * (delta / 1000.0f);
+		x += direction.x * speed;
+		y += direction.y * speed;
 
 		Dos someDos = (Dos) collide(x, y, "Dos");
 		if (someDos != null)

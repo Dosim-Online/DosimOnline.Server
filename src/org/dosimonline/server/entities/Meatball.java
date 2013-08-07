@@ -19,10 +19,10 @@ public class Meatball extends Entity {
 	}
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
-		x += direction.x * speed * (delta / 1000.0f);
-		y += direction.y * speed * (delta / 1000.0f);
+	public void update() {
+		super.update();
+		x += direction.x * speed;
+		y += direction.y * speed;
 
 		Dos someDos = (Dos) collide(x, y, "Dos");
 		if (someDos != null) {

@@ -10,8 +10,8 @@ public class Dos extends Entity {
 	}
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
+	public void update() {
+		super.update();
 		// Get details from the main entity array.
 	}
 }

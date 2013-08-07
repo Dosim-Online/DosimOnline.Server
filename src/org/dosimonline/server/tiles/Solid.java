@@ -1,4 +1,4 @@
-package org.dosimonline.server.entities;
+package org.dosimonline.server.tiles;
 import org.dosimonline.server.Entity;
 
 public class Solid extends Entity {

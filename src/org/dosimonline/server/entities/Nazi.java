@@ -11,7 +11,7 @@ public class Nazi extends Entity {
 	static final int MAX_VERTICAL_SPEED = 1000;
 	float velocityY;
 	Random random = new Random();
-	Dos dos = new Dos(x, y);
+	Dos victim = new Dos(x, y);
 	int lifeAddChance = random.nextInt(30);
 
 	public Nazi(int x, int y) {
@@ -19,18 +19,18 @@ public class Nazi extends Entity {
 	}
 
 	@Override
-	public void update(int delta) {
-		if (dos == null) {
+	public void update() {
+		if (victim == null && areThereAnyDoses())
 			findDosToChase();
-			if (dos == null)
+		
+		if (!areThereAnyDoses())
 				this.destroy();
-		}
-
+		
 		float nextX = x;
-		if (dos.x < x) {
-			nextX -= INITIAL_SPEED * (delta / 1000f);
-		} else if (dos.x > x) {
-			nextX += INITIAL_SPEED * (delta / 1000f);
+		if (victim.x < x) {
+			nextX -= INITIAL_SPEED;
+		} else if (victim.x > x) {
+			nextX += INITIAL_SPEED;
 		}
 		if (collide(nextX, y, "Solid") == null) {
 			x = nextX;
@@ -44,16 +44,16 @@ public class Nazi extends Entity {
 				}
 			}
 		} else {
-			if (dos.y > y)
-				velocityY = -CLIMB_SPEED * (delta / 1000f);
-			else if (dos.y < y)
-				velocityY = +CLIMB_SPEED * (delta / 1000f);
+			if (victim.y > y)
+				velocityY = -CLIMB_SPEED;
+			else if (victim.y < y)
+				velocityY = +CLIMB_SPEED;
 		}
 		y += velocityY;
 
 		if (isAirborne()) {
 			if (velocityY < MAX_VERTICAL_SPEED)
-				velocityY += 10 * (delta / 1000f);
+				velocityY += 10;
 		} else {
 			if (velocityY > 0) {
 				y = (int) y;
@@ -73,10 +73,8 @@ public class Nazi extends Entity {
 		StarOfDavid someStartOfDavid = (StarOfDavid) collide(x, y, "Semitic Attack");
 		if (someStartOfDavid != null) {
 			someStartOfDavid.getShootingDos().score += 1;
-			if (lifeAddChance == 0) {
+			if (lifeAddChance == 0) 
 				someStartOfDavid.getShootingDos().life++;
-				lifeAddChance = random.nextInt(30);
-			}
 			destroy();
 		}
 	}
@@ -96,11 +94,18 @@ public class Nazi extends Entity {
 			}
 		}
 
-		this.dos = closestDos;
+		this.victim = closestDos;
 	}
 
 	boolean isAirborne() {
 		return collide(x, y, "Solid") == null
 			  && collide(x, y, "Solid") == null;
+	}
+	
+	boolean areThereAnyDoses() {
+		for (Entity e : DosimOnlineServer.entities)
+			if (e instanceof Dos)
+				return true;
+		return false;
 	}
 }
