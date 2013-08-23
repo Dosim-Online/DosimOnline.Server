@@ -1,6 +1,6 @@
 package org.dosimonline.server.entities;
 import java.util.Random;
-import org.dosimonline.server.DosimOnlineServer;
+import org.dosimonline.server.DOServer;
 import org.dosimonline.server.Entity;
 import org.dosimonline.server.Vector2f;
 
@@ -13,42 +13,40 @@ public class Nazi extends Entity {
 	Random random = new Random();
 	Dos victim = new Dos(x, y);
 	int lifeAddChance = random.nextInt(30);
+	Container container;
 
 	public Nazi(int x, int y) {
-		super(x, y, 20, 35, "Anti Semitic");
+		super(x, y, 20, 35, "Nazi");
 	}
 
 	@Override
-	public void update() {
+	public void update(int delta) {
+		super.update(delta);
+		container = new Container(id, x, y);
+		
 		if (victim == null && areThereAnyDoses())
 			findDosToChase();
-		
+
 		if (!areThereAnyDoses())
-				this.destroy();
-		
+			this.destroy();
+
 		float nextX = x;
-		if (victim.x < x) {
+		if (victim.x < x)
 			nextX -= INITIAL_SPEED;
-		} else if (victim.x > x) {
+		else if (victim.x > x)
 			nextX += INITIAL_SPEED;
-		}
-		if (collide(nextX, y, "Solid") == null) {
+		if (collide(nextX, y, "Solid") == null)
 			x = nextX;
-		}
 
 		if (collide(x, y, "Ladder") == null) {
 			// Going up
-			if (velocityY < 0) {
-				if (collide(x, y - velocityY, "Solid") != null) {
+			if (velocityY < 0)
+				if (collide(x, y - velocityY, "Solid") != null)
 					velocityY = 0;
-				}
-			}
-		} else {
-			if (victim.y > y)
-				velocityY = -CLIMB_SPEED;
-			else if (victim.y < y)
-				velocityY = +CLIMB_SPEED;
-		}
+		} else if (victim.y > y)
+			velocityY = -CLIMB_SPEED;
+		else if (victim.y < y)
+			velocityY = +CLIMB_SPEED;
 		y += velocityY;
 
 		if (isAirborne()) {
@@ -70,10 +68,10 @@ public class Nazi extends Entity {
 			destroy();
 		}
 
-		StarOfDavid someStartOfDavid = (StarOfDavid) collide(x, y, "Semitic Attack");
+		StarOfDavid someStartOfDavid = (StarOfDavid) collide(x, y, "Star of David");
 		if (someStartOfDavid != null) {
 			someStartOfDavid.getShootingDos().score += 1;
-			if (lifeAddChance == 0) 
+			if (lifeAddChance == 0)
 				someStartOfDavid.getShootingDos().life++;
 			destroy();
 		}
@@ -83,29 +81,40 @@ public class Nazi extends Entity {
 		Dos closestDos = null;
 		float closestDosSquaredDis = 0;
 
-		for (Entity entity : DosimOnlineServer.entities) {
+		for (Entity entity : DOServer.entities)
 			if (entity instanceof Dos) {
 				float distanceSquared = new Vector2f(x, y)
-					  .distanceSquared(new Vector2f(entity.x, entity.y));
+					.distanceSquared(new Vector2f(entity.x, entity.y));
 				if (distanceSquared > closestDosSquaredDis) {
 					closestDosSquaredDis = distanceSquared;
 					closestDos = (Dos) entity;
 				}
 			}
-		}
 
 		this.victim = closestDos;
 	}
 
 	boolean isAirborne() {
 		return collide(x, y, "Solid") == null
-			  && collide(x, y, "Solid") == null;
+			&& collide(x, y, "Solid") == null;
 	}
-	
+
 	boolean areThereAnyDoses() {
-		for (Entity e : DosimOnlineServer.entities)
+		for (Entity e : DOServer.entities)
 			if (e instanceof Dos)
 				return true;
 		return false;
+	}
+
+	public class Container {
+		String type = "Nazi";
+		int id;
+		float x, y;
+
+		public Container(int id, float x, float y) {
+			this.x = x;
+			this.y = y;
+			this.id = id;
+		}
 	}
 }

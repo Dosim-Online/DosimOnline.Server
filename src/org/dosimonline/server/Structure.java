@@ -24,14 +24,14 @@ public class Structure {
 	}
 
 	static void addWall(int x, int y) {
-		DosimOnlineServer.entities.add(new Solid(x, y));
+		DOServer.entities.add(new Solid(x, y));
 	}
 
 	static void addCeiling(int x, int y) {
-		DosimOnlineServer.entities.add(new Ceiling(x, y));
+		DOServer.entities.add(new Ceiling(x, y));
 	}
 
 	static void addLadder(int x, int y) {
-		DosimOnlineServer.entities.add(new Ladder(x, y));
+		DOServer.entities.add(new Ladder(x, y));
 	}
 }
