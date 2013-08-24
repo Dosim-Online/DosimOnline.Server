@@ -29,7 +29,7 @@ public class StarOfDavid extends Entity {
 		super.update(delta);
 		
 		x += direction.x * speed;
-		y += direction.x * speed;
+		y += direction.y * speed;
 
 		if (collide(x, y, "Solid") != null)
 			this.destroy();
