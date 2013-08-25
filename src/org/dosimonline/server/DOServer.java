@@ -56,8 +56,6 @@ public class DOServer {
 		spawnFSM = 0;
 		spawnNazi = 0;
 
-		entities.add(new Dos(0, 5000));
-
 		long delta = 0;
 		// Update
 		while (true) {
@@ -73,7 +71,7 @@ public class DOServer {
 
 		if (spawnNazi > 0)
 			spawnNazi -= delta;
-		else {
+		else if (areThereAnyDoses()) {
 			int naziX = random.nextInt(4100) + 600;
 			entities.add(new Nazi(naziX, 0));
 			print("Spawned a Nazi at " + naziX + ", 0");
@@ -82,7 +80,7 @@ public class DOServer {
 
 		if (spawnFSM > 0)
 			spawnFSM -= delta;
-		else {
+		else if (areThereAnyDoses()) {
 			int fsmX = random.nextInt(RIGHT_BORDER);
 			entities.add(new FlyingSpaghettiMonster(fsmX, BOTTOM_BORDER / 2));
 			print("Spawned an instance of the Flying Spaghetti Monster at " + fsmX + ", -500");
@@ -96,5 +94,12 @@ public class DOServer {
 		String minutes = date.getMinutes() > 10 ? "" + date.getMinutes() : "0" + date.getMinutes();
 		String seconds = date.getSeconds() > 10 ? "" + date.getSeconds() : "0" + date.getSeconds();
 		System.out.println("[" + hours + ":" + minutes + ":" + seconds + "] " + o);
+	}
+	
+	static boolean areThereAnyDoses() {
+		for (Entity e : DOServer.entities)
+			if (e instanceof Dos)
+				return true;
+		return false;
 	}
 }
